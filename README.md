@@ -1,5 +1,8 @@
 # UsurpAD
 
+> [!WARNING]
+> Only use this on systems you own or have authorisation to test. Do not enable `--no-cleanup` unless you know what you're doing and are willing to clean up the result by yourself. This can and will prevent other accounts in the environment from working correctly. 
+
 The patch for BadSuccessor (CVE-2025-53779) involved validating the link between the dMSA account and the account it was set to supersede from both sides rather than blindly trusting the dMSA. While this means dMSAs can no longer essentially grant instant DA, they can still be utilised by a privileged user to dump passwords or take over accounts if the user has appropriate write permissions over those accounts.
 
 UsurpAD in particular is designed to exploit this functionality to dump the passwords of any user you have write permissions over. This is done by looping over every user in the domain, trying to write the relevant attributes, and if it succeeds authenticating to the dMSA. This returns a copy of each user's current Kerberos keys, which also may include the RC4-HMAC key, aka NT hash. These keys can then be used to perform pass-the-key attacks against the user, or if an NT hash is present, pass-the-hash or password cracking.
